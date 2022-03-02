@@ -1,4 +1,6 @@
 import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
+import { numbersInRangeObject } from "../utils";
+import NumbersInRange from "./types/numbers-in-range";
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -26,6 +28,16 @@ const QueryType = new GraphQLObjectType({
                     sum += i
                 }
                 return sum;
+            }
+        },
+        numbersInRange:{
+            type: NumbersInRange,
+            args:{
+                begin: { type: new  GraphQLNonNull(GraphQLInt) },
+                end: { type: new  GraphQLNonNull(GraphQLInt) }
+            },
+            resolve: function(source, { begin, end }){
+                return numbersInRangeObject(begin, end);
             }
         }
     }
