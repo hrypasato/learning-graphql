@@ -1,9 +1,4 @@
-/** GIA NOTES
- *
- * Use the code below to start a bare-bone express web server
-*/
-import { graphql } from "graphql";
-import { rootValue, schema } from "./schema";
+import { schema } from "./schema";
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -24,7 +19,6 @@ async function main() {
   // Example route
   server.use('/', graphqlHTTP({
     schema,
-    rootValue,
     graphiql:true,
   }));
 
