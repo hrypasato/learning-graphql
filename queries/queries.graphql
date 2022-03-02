@@ -1,0 +1,147 @@
+#listing the lastest Task records sorted by creation timestamp (newer first)
+query{
+    taskMainList{
+        id
+        content
+    }
+}
+
+#the union-type seach field
+query{
+    search(term: "something"){
+        type: __typename
+        ... on Task{
+            id
+            content
+            approachCount
+        }
+        ... on Approach{
+            id
+            content
+            task{
+                id
+                content
+            }
+        }
+    }
+}
+
+#the interface-type search field
+query{
+    seach(term: "something"){
+        type: __typename
+        id
+        content
+        ... on Task{
+            approachCount
+        }
+        ... on Approach{
+            task{
+                id
+                content
+            }
+        }
+    }
+}
+
+#taskInfo
+query{
+    taskInfo(
+        #Arguments to identify a Task record
+    ){
+        #Fields under a Task record
+        author{
+            #Fields under a User record
+        }
+        approachList{
+            #Fields under an Approach record
+            author{
+                #Fields under a User record
+            }
+            detailList{
+                #Field under an Approach Detail record
+            }
+        }
+    }
+}
+
+#list of Task records for an authenticated user
+query{
+    me(
+        #arguments to validate user access
+    ){
+        taskList{
+            #fields under a Task record
+        }
+    }
+}
+
+#user create
+mutation{
+    userCreate(
+        #input for a new User record
+    ){
+        #Fail/Success response
+    }
+}
+
+#user update mutation
+mutation{
+    userUpdate(
+        #input for a user record
+    ){
+        #Fail/Success response
+    }
+}
+
+#user delete mutation
+mutation{
+    userDelete{
+
+    }
+}
+
+#task creation mutation
+mutation {
+    taskCreate(
+        #Input for a new Task record
+    ){
+        #Fail/Success Task payload
+    }
+}
+
+#approach create mutation
+mutation{
+    approachCreate(
+        #Input to identify a Task record
+        #Input for a new Approach record (with ApproachDetail)
+    ){
+        #Fail/Success Approach payload
+    }
+}
+
+#approach vote mutation
+mutation {
+    approachVote(
+        #Input to identify an Approach record
+        #Input for "Vote"
+    ){
+        #Fail/Success Approach payload
+    }
+}
+
+#vote changed suscription
+subscription{
+    voteChanged(
+        #Input to identify a Task record
+    ) {
+        #Fields under an Approach record
+    }
+}
+
+#indicator new Task records are available
+subscription{
+    taskMainListChanged{
+        #Fields under a Task record
+    }
+}

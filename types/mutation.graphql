@@ -1,0 +1,26 @@
+type Mutation {
+    userCreate(input: UserInput!): UserPayload!
+    userLogin(input: AuthInput!): UserPayload!
+    userUpdate(
+        userId: ID! 
+        input: UserUpdateInput!
+    ): UserPayload! 
+    userDelete: UserDeletePayload!
+    
+    taskCreate(input: TaskInput!): TaskPayload!
+    
+    approachCreate(
+        taskId: ID!
+        input: ApproachInput!
+    ):ApproachPayload!
+
+    approachUpdate(
+        approachId: ID!
+        input: ApproachInput!
+    )
+
+    approachVote(
+        approachId: ID!
+        input: ApproachVoteInput!
+    ): ApproachPayload!
+}

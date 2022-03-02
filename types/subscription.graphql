@@ -1,0 +1,4 @@
+type Subscription {
+    voteChanged(taskId: ID!): Approach!
+    taskMainListChanged: [Task!]
+}

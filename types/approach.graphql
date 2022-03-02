@@ -1,0 +1,24 @@
+type Approach implements SearchResultItem {
+    id:ID;
+    createdAt: String!
+    content: String!
+    task: Task!
+    voteCount: Int!
+    author: User!
+    detailList:[ApproachDetail!]!
+}
+
+type ApproachPayload{
+    errors: [UserError!]!
+    approach: Approach
+}
+
+input ApproachInput {
+    content: String!
+    detailList: [ApproachDetailInput!]!
+}
+
+input ApproachVoteInput {
+    """true for up-vote and false for down-vote"""
+    up: Boolean!
+}

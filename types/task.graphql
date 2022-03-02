@@ -1,0 +1,20 @@
+type Task implements SearchResultItem{
+    id: ID
+    createdAt:String!
+    content: String!
+    approachCount: Int!
+    author: User!
+    approachList: [Approach!]!
+    tags: [String!]!
+}
+
+type TaskPayload{
+    errors: [UserError!]!
+    task: Task
+}
+
+input TaskInput{
+    content: String!
+    tags: [String!]!
+    isPrivate: Boolean!
+}

@@ -1,0 +1,17 @@
+#
+#If they have shared fields, then an interface is better fit. 
+#Only use unions when the grouped models have no shared fields
+#
+
+union TaskOrApproach = Task | Approach
+interface SearchResultItem {
+    id: ID!
+    content: String!
+}
+
+type Query{
+    taskMainList:[Task!]
+    seach(term: String!): [SearchResultItem!]
+    taskInfo(id: ID!): Task
+    me:User
+}

@@ -1,0 +1,15 @@
+enum ApproachDetailCategory{
+    NOTE
+    EXPLANATION
+    WARNING
+}
+
+type ApproachDetail{
+    content: String!
+    category: ApproachDetailCategory!
+}
+
+input ApproachDetailInput{
+    content: String!
+    category: ApproachDetailCategory!
+}

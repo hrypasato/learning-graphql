@@ -1,0 +1,40 @@
+type User{
+    id:ID
+    createdAt: String!
+    username: String!
+    name: String
+    taskList: [Task!]!
+}
+
+type UserError{
+    message: String!
+}
+
+type UserPayload{
+    errors: [UserError!]!
+    user: User
+    authToken: String
+}
+
+type UserDeletePayload{
+    errors: [UserError!]!
+    deleteUserId: ID
+}
+
+input UserInput{
+    username: String!
+    password: String!
+    firstName: String
+    lastName: String
+}
+
+input UserUpdateInput{
+    username: String!
+    firstName: String
+    lastName: String
+}
+
+input AuthInput {
+    username: String!
+    password: String!
+}
