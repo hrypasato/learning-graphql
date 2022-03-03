@@ -10,14 +10,13 @@ export default async function pgClient() {
   // Test the connection
   const client = await pgPool.connect();
   const tableCountResp = await client.query(
-    'select count(*) from information_schema.tables where table_schema = $1;',
-    ['azdev']
+    'select now();'
   );
   client.release();
 
   console.log(
-    'Connected to PostgreSQL | Tables count:',
-    tableCountResp.rows[0].count
+    'Connected to PostgreSQL | Now:',
+    tableCountResp.rows[0].now
   );
 
   pgPool.on('error', (err) => {
