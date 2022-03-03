@@ -7,8 +7,11 @@ import morgan from 'morgan';
 
 import * as config from './config';
 import { graphqlHTTP } from "express-graphql";
+import pgApiWrapper from "./db/pg-api";
 
 async function main() {
+  const pgApi = await pgApiWrapper();
+  
   const server = express();
   server.use(cors());
   server.use(morgan('dev'));
@@ -19,6 +22,7 @@ async function main() {
   // Example route
   server.use('/', graphqlHTTP({
     schema,
+    context:{ pgApi },
     graphiql:true,
   }));
 
