@@ -1,6 +1,7 @@
-import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
+import { GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
 import { numbersInRangeObject } from "../utils";
 import NumbersInRange from "./types/numbers-in-range";
+import Task from "./types/task";
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -42,6 +43,12 @@ const QueryType = new GraphQLObjectType({
             },
             resolve: function(source, { begin, end }){
                 return numbersInRangeObject(begin, end);
+            }
+        },
+        taskMainList:{
+            type: new GraphQLList(new GraphQLNonNull(Task)),
+            resolve: async (source, args, { pgApi }) => {
+                return pgApi.taskMainList();
             }
         }
     }
