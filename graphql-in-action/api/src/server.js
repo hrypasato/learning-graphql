@@ -25,11 +25,12 @@ async function main() {
     const loaders = {
       users: new DataLoader((userIds) => pgApi.usersInfo(userIds)),
       approachLists: new DataLoader((taskIds) => pgApi.approachLists(taskIds)),
-      tasks: new DataLoader((taskIds) => pgApi.taskInfo(taskIds))
+      tasks: new DataLoader((taskIds) => pgApi.taskInfo(taskIds)),
+      tasksByTypes: new DataLoader((types) => pgApi.tasksByTypes(types))
     };
     graphqlHTTP({
       schema,
-      context:{ pgApi, loaders },
+      context:{ loaders },
       graphiql:true,
       customFormatErrorFn: (err) => {
         const errorReport = {

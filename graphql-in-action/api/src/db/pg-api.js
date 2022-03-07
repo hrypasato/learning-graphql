@@ -1,3 +1,4 @@
+import { types } from "pg/lib";
 import pgClient from "./pg-client";
 import sqls from './sqls';
 
@@ -33,6 +34,16 @@ const pgApiWrapper = async () => {
         taskInfo: async (taskIds) => {
             const pgResp = await pgQuery(sqls.tasksFromIds, { $1: taskIds, $2: null })
             return taskIds.map((taskId) => pgResp.rows.find((row) => taskId == row.id));
+        },
+        tasksByTypes:async (types) => {
+            const results = types.map(async (type) =>{
+                if(type === 'latest'){
+                    const pgResp = await pgQuery(sqls.tasksLatest)
+                    return pgResp.rows;
+                }
+            throw Error('Unsupported type');
+            });
+            return Promise.all(results)
         }
     }
 }
