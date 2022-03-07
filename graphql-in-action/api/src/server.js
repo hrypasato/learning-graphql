@@ -26,7 +26,8 @@ async function main() {
       users: new DataLoader((userIds) => pgApi.usersInfo(userIds)),
       approachLists: new DataLoader((taskIds) => pgApi.approachLists(taskIds)),
       tasks: new DataLoader((taskIds) => pgApi.taskInfo(taskIds)),
-      tasksByTypes: new DataLoader((types) => pgApi.tasksByTypes(types))
+      tasksByTypes: new DataLoader((types) => pgApi.tasksByTypes(types)),
+      searchResults: new DataLoader((searchTerms) => pgApi.searchResults(searchTerms))
     };
     graphqlHTTP({
       schema,

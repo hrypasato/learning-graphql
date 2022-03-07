@@ -2,6 +2,7 @@ import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, 
 import NumbersInRange from './types/numbers-in-range';
 import { numbersInRangeObject } from '../utils';
 import Task from "./types/task";
+import SearchResultItem from "./types/search-result-item";
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',
@@ -58,6 +59,17 @@ const QueryType = new GraphQLObjectType({
             },
             resolve: async (source, args, { loaders }) => {
                 return loaders.tasks.load(args.id);
+            }
+        },
+        search:{
+            type: new GraphQLNonNull(
+                new GraphQLList(new GraphQLNonNull(SearchResultItem))
+            ),
+            args:{
+                term: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve: async (source, args, { loaders }) => {
+                return loaders.searchResults.load(args.term);
             }
         }
     }

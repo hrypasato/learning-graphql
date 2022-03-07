@@ -44,6 +44,17 @@ const pgApiWrapper = async () => {
             throw Error('Unsupported type');
             });
             return Promise.all(results)
+        },
+        searchResults: async (searchTerms) => {
+            const results = searchTerms.map(async (searchTerm)=>{
+                const pgResp = await pgQuery(sqls.searchResults, {
+                    $1:searchTerm,
+                    $2: null
+                });
+                return pgResp.rows;
+            });
+
+            return Promise.all(results);
         }
     }
 }
