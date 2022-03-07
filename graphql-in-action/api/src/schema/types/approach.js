@@ -4,6 +4,7 @@ import User from "./user";
 
 const Approach = new GraphQLObjectType({
     name:'Approach',
+    interfaces: ()=>[SearchResultItem],
     fields: () => ({
         id: { type:new GraphQLNonNull(GraphQLID) },
         content: { type: new GraphQLNonNull(GraphQLString) },
