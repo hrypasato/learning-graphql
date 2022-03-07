@@ -1,4 +1,5 @@
-import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
+import ApproachDetail from "./approach-detail";
 import SearchResultItem from "./search-result-item";
 import Task from "./task";
 import User from "./user";
@@ -21,6 +22,12 @@ const Approach = new GraphQLObjectType({
         task:{
             type: new GraphQLNonNull(Task),
             resolve: (source, args, { loaders }) => loaders.tasks.load(source.taskId)
+        },
+        detailList:{
+            type:new GraphQLNonNull(
+                new GraphQLList(new GraphQLNonNull(ApproachDetail))
+            ),
+            resolve: (source, args, { loaders }) => loaders.detailLists.load(source.id)
         }
     })
 });

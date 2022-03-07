@@ -9,9 +9,11 @@ import * as config from './config';
 import { graphqlHTTP } from "express-graphql";
 import pgApiWrapper from "./db/pg-api";
 import DataLoader from "dataloader";
+import mongoApiWrapper from "./db/mongo-api";
 
 async function main() {
   const pgApi = await pgApiWrapper();
+  const mongoApi = await mongoApiWrapper();
   
   const server = express();
   server.use(cors());
@@ -27,8 +29,10 @@ async function main() {
       approachLists: new DataLoader((taskIds) => pgApi.approachLists(taskIds)),
       tasks: new DataLoader((taskIds) => pgApi.taskInfo(taskIds)),
       tasksByTypes: new DataLoader((types) => pgApi.tasksByTypes(types)),
-      searchResults: new DataLoader((searchTerms) => pgApi.searchResults(searchTerms))
+      searchResults: new DataLoader((searchTerms) => pgApi.searchResults(searchTerms)),
+      detailLists: new DataLoader((approachIds) => mongoApi.detailLists(approachIds))
     };
+    
     graphqlHTTP({
       schema,
       context:{ loaders },
