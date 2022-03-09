@@ -14,6 +14,11 @@ import mongoApiWrapper from "./db/mongo-api";
 async function main() {
   const pgApi = await pgApiWrapper();
   const mongoApi = await mongoApiWrapper();
+
+  const mutators = {
+    ...pgApi.mutators,
+    ...mongoApi.mutators
+  }
   
   const server = express();
   server.use(cors());
@@ -35,7 +40,7 @@ async function main() {
     
     graphqlHTTP({
       schema,
-      context:{ loaders },
+      context:{ loaders, mutators },
       graphiql:true,
       customFormatErrorFn: (err) => {
         const errorReport = {
