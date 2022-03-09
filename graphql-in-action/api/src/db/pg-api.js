@@ -1,4 +1,5 @@
 import { types } from "pg/lib";
+import { randomString } from "../utils";
 import pgClient from "./pg-client";
 import sqls from './sqls';
 
@@ -55,6 +56,61 @@ const pgApiWrapper = async () => {
             });
 
             return Promise.all(results);
+        },
+        mutators:{
+            userCreate: async ({ input }) => {
+                const payload = { errors: [] };
+                if(input.password.length < 6){
+                    payload.errors.push({
+                        message: 'Use a stronger password'
+                    });
+                }
+                if(payload.errors.length === 0){
+                    const authToken = randomString();
+                    const pgResp = await pgQuery(sqls.userInsert, {
+                        $1: input.username.toLowerCase(),
+                        $2: input.password,
+                        $3: input.firstName,
+                        $4: input.lastName,
+                        $5: authToken
+                    });
+                    if(pgResp.rows[0]){
+                        payload.user = pgResp.rows[0];
+                        payload.authToken = authToken;
+                    }
+                }
+
+                return payload;
+            },
+            userLogin: async ({ input }) => {
+                const payload = { errors: [] };
+                if(!input.username || !input.password){
+                    payload.errors.push({
+                        message: 'Invalid username or password'
+                    });
+                }
+                if(payload.errors.length === 0){
+                    const pgResp = await pgQuery(sqls.userFromCredentials, {
+                        $1: input.username.toLowerCase(),
+                        $2: input.password
+                    });
+                    const user = pgResp.rows[0];
+                    if(user){
+                        const authToken = randomString();
+                        await pgQuery(sqls.userUpdateAuthToken, {
+                            $1: user.id,
+                            $2: authToken
+                        });
+                        payload.user = user;
+                        payload.authToken = authToken;
+                    }else{
+                        payload.errors.push({
+                            message: 'Invalid username or password'
+                        });
+                    }
+                }
+                return payload;
+            }
         }
     }
 }
