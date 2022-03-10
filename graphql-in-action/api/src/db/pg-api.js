@@ -55,6 +55,13 @@ const pgApiWrapper = async () => {
             });
             return Promise.all(results)
         },
+        taskForUsers: async (userIds) => {
+            const pgResp = await pgQuery(sqls.tasksForUsers, {
+                $1:userIds
+            })
+
+            return userIds.map((userId) => pgResp.rows.filter((row) => userId === row.userId));
+        },
         searchResults: async ({ searchTerms, currentUser }) => {
             const results = searchTerms.map(async (searchTerm)=>{
                 const pgResp = await pgQuery(sqls.searchResults, {
@@ -117,6 +124,27 @@ const pgApiWrapper = async () => {
                             message: 'Invalid username or password'
                         });
                     }
+                }
+                return payload;
+            },
+            taskCreate: async ({ input, currentUser }) => {
+                const payload = { errors: [] };
+                if(input.content.length < 15){
+                    payload.errors.push({
+                        message: 'Text it too short'
+                    });
+                }
+                if(payload.errors.length === 0){
+                    const pgResp = await pgQuery(sqls.taskInsert, { 
+                        $1: currentUser.id,
+                        $2: input.content,
+                        $3: input.tags.join(','),
+                        $4: input.isPrivate
+                     });
+
+                     if(pgResp.rows[0]){
+                         payload.task = pgResp.rows[0];
+                     }
                 }
                 return payload;
             }

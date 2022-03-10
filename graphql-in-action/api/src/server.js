@@ -46,12 +46,13 @@ async function main() {
       tasks: new DataLoader((taskIds) => pgApi.taskInfo({ taskIds, currentUser })),
       tasksByTypes: new DataLoader((types) => pgApi.tasksByTypes(types)),
       searchResults: new DataLoader((searchTerms) => pgApi.searchResults({ searchTerms, currentUser })),
-      detailLists: new DataLoader((approachIds) => mongoApi.detailLists(approachIds))
+      detailLists: new DataLoader((approachIds) => mongoApi.detailLists(approachIds)),
+      taskForUsers: new DataLoader((userIds) => pgApi.taskForUsers(userIds))
     };
     
     graphqlHTTP({
       schema,
-      context:{ loaders, mutators },
+      context:{ loaders, mutators, currentUser },
       graphiql:{ headerEditorEnabled: true },
       customFormatErrorFn: (err) => {
         const errorReport = {
