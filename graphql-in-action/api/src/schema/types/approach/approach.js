@@ -1,8 +1,8 @@
 import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import ApproachDetail from "./approach-detail";
-import SearchResultItem from "./search-result-item";
-import Task from "./task";
-import User from "./user";
+import SearchResultItem from "../search/search-result-item";
+import Task from "../task/task";
+import User from "../user/user";
 
 const Approach = new GraphQLObjectType({
     name:'Approach',

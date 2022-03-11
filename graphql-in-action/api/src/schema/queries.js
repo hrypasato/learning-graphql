@@ -1,9 +1,9 @@
 import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import NumbersInRange from './types/numbers-in-range';
+import NumbersInRange from './types/number/numbers-in-range';
 import { numbersInRangeObject } from '../utils';
-import Task from "./types/task";
-import SearchResultItem from "./types/search-result-item";
-import Me from "./types/me";
+import Task from "./types/task/task";
+import SearchResultItem from "./types/search/search-result-item";
+import Me from "./types/user/me";
 
 const QueryType = new GraphQLObjectType({
     name: 'Query',

@@ -1,6 +1,6 @@
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from "graphql";
-import Approach from "./approach";
-import UserError from "./user-error";
+import Approach from "../approach/approach";
+import UserError from "../user/user-error";
 
 const ApproachPayload = new GraphQLObjectType({
     name:'ApproachPayload',

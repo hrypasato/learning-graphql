@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from "graphql";
-import ApproachDetailCategory from "./approach-detail-category";
+import ApproachDetailCategory from "../approach/approach-detail-category";
 
 const ApproachDetailInput = new GraphQLInputObjectType({
     name:'ApproachDetailInput',

@@ -1,5 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from "graphql";
-import Task from "./task";
+import Task from "../task/task";
 import { userFields } from "./user";
 
 const Me = new GraphQLObjectType({

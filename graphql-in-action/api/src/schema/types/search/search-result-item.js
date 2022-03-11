@@ -1,6 +1,6 @@
 import { GraphQLID, GraphQLInterfaceType, GraphQLNonNull, GraphQLString } from "graphql";
-import Approach from "./approach";
-import Task from "./task";
+import Approach from "../approach/approach";
+import Task from "../task/task";
 
 const SearchResultItem = new GraphQLInterfaceType({
     name: 'SearchResultItem',
