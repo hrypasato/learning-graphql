@@ -6,7 +6,7 @@ import User from "./user";
 const Task = new GraphQLObjectType({
     name: 'Task',
     interfaces: ()=>[SearchResultItem],
-    fields: {
+    fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLID) },
         content: { type: new GraphQLNonNull(GraphQLString) },
         approachCount: { type: new GraphQLNonNull(GraphQLInt) },
@@ -30,7 +30,7 @@ const Task = new GraphQLObjectType({
             ),
             resolve: (source, args, { loaders }) => loaders.approachLists.load(source.id)
         }
-    }
+    })
 });
 
 export default Task;
