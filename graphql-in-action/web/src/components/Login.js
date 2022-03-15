@@ -25,7 +25,8 @@ export default function Login() {
     event.preventDefault();
     const input = event.target.elements;
 
-    const { data } = await request(USER_LOGIN, {
+    const { data, errors: rootErrors } = 
+    await request(USER_LOGIN, {
       variables:{
         input:{
           username: input.username.value,
@@ -34,6 +35,10 @@ export default function Login() {
       }
     });
 
+    if(rootErrors){
+      setUIErrors(rootErrors);
+    }
+    
     const { errors, user, authToken } = data.userLogin;
 
     if (errors.length > 0) {
