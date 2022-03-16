@@ -58,15 +58,13 @@ export const useStoreObject = () => {
   // This function should make an ajax call to GraphQL server
   // and return the GraphQL response object
   const request = async (requestText, { variables } = {}) => {
-    /** GIA NOTES
-     *
-     * Make an Ajax call here to config.GRAPHQL_SERVER_URL
-     * Pass both requestText and variables as body params
-     *
-     */
+    const headers = state.user 
+      ? { Authorization: 'Bearer ' + state.user.authToken } 
+      : {};
+
     const gsResp = await fetch(config.GRAPHQL_SERVER_URL, {
       method:'post',
-      headers:{ 'Content-Type': 'application/json' },
+      headers:{ ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: requestText, variables })
     }).then((response) => response.json());
 
