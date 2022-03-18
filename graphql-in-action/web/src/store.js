@@ -3,6 +3,7 @@ import fetch from 'cross-fetch';
 
 import * as config from './config';
 import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/link-context';
 
 const cache = new InMemoryCache();
 const httpLink = new HttpLink({ uri: config.GRAPHQL_SERVER_URL });
@@ -40,6 +41,12 @@ export const useStoreObject = () => {
     setState((currentState) => {
       return { ...currentState, ...newState };
     });
+
+    //Reset cache when users login/logout
+    if(newState.user || newState.user === null){
+      client.resetStore();
+    }
+
   };
 
   // This is a component that can be used in place of
@@ -59,6 +66,19 @@ export const useStoreObject = () => {
       </a>
     );
   };
+
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers:{
+        ...headers,
+        authorization: state.user 
+                      ? `Bearer ${state.user.authToken}`
+                      : ''
+      }
+    }
+  });
+
+  client.setLink(authLink.concat(httpLink));
 
   // This function should make an ajax call to GraphQL server
   // and return the GraphQL response object
