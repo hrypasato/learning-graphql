@@ -1,10 +1,11 @@
+import { gql } from '@apollo/client';
 import React, { useState, useEffect } from 'react';
 
 import { useStore } from '../store';
 import { APPROACH_FRAGMENT } from './Approach';
 import Errors from './Errors';
 
-const DETAIL_CATEGORIES = `
+const DETAIL_CATEGORIES = gql`
 query getDetailCategories {
   detailCategories: __type(name: "ApproachDetailCategory"){
     enumValues{
@@ -14,7 +15,7 @@ query getDetailCategories {
 }
 `;
 
-const APPROACH_CREATE = `
+const APPROACH_CREATE = gql`
 mutation approachCreate($taskId: ID!, $input:ApproachInput!){
   approachCreate(taskId: $taskId, input:$input){
     errors{
@@ -30,18 +31,18 @@ ${APPROACH_FRAGMENT}
 `;
 
 export default function NewApproach({ taskId, onSuccess }) {
-  const { useLocalAppState, request } = useStore();
+  const { useLocalAppState, query, mutate } = useStore();
   const [detailCategories, setDetailCategories] = useState([]);
   const [detailRows, setDetailRows] = useState([0]);
   const [uiErrors, setUIErrors] = useState([]);
 
   useEffect(() => {
     if (detailCategories.length === 0) {
-      request(DETAIL_CATEGORIES).then(({ data }) => {
+      query(DETAIL_CATEGORIES).then(({ data }) => {
         setDetailCategories(data.detailCategories.enumValues);
       }).catch(err => console.error(err));
     }
-  }, [detailCategories, request]);
+  }, [detailCategories, query]);
 
   const user = useLocalAppState('user');
 
@@ -64,7 +65,7 @@ export default function NewApproach({ taskId, onSuccess }) {
       content: input[`detail-content-${detailId}`].value,
     }));
 
-    const { data, errors: rootErrors } = await request(
+    const { data, errors: rootErrors } = await mutate(
       APPROACH_CREATE,
       {
         variables:{

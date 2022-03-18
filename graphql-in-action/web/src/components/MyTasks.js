@@ -16,14 +16,14 @@ ${TASK_SUMMARY_FRAGMENT}
 `;
 
 export default function MyTasks() {
-  const { request } = useStore();
+  const { query } = useStore();
   const [myTaskList, setMyTaskList] = useState(null);
 
   useEffect(() => {
-    request(MY_TASK_LIST).then(({ data }) => {
+    query(MY_TASK_LIST).then(({ data }) => {
       setMyTaskList(data.me.taskList);
     })
-  }, [request]);
+  }, [query]);
 
   if (!myTaskList) {
     return <div className="loading">Loading...</div>;

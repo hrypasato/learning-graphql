@@ -1,9 +1,10 @@
+import { gql } from '@apollo/client';
 import React, { useState } from 'react';
 
 import { useStore } from '../store';
 import Errors from './Errors';
 
-export const APPROACH_FRAGMENT = `
+export const APPROACH_FRAGMENT = gql`
 fragment ApproachFragment on Approach{
   content
   voteCount
@@ -17,7 +18,7 @@ fragment ApproachFragment on Approach{
 }
 `;
 
-const APPROACH_VOTE = `
+const APPROACH_VOTE = gql`
 mutation approachVote($approachId:ID!, $up:Boolean!){
   approachVote(approachId:$approachId, input: { up: $up }){
     errors{
@@ -32,14 +33,14 @@ mutation approachVote($approachId:ID!, $up:Boolean!){
 `;
 
 export default function Approach({ approach, isHighlighted }) {
-  const { request } = useStore();
+  const { mutate } = useStore();
   const [uiErrors, setUIErrors] = useState();
   const [voteCount, setVoteCount] = useState(approach.voteCount);
 
   const handleVote = (direction) => async (event) => {
     event.preventDefault();
 
-    const { data, errors: rootErrors } = await request(
+    const { data, errors: rootErrors } = await mutate(
       APPROACH_VOTE,
       {
         variables:{

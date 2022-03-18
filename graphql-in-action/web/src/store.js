@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import fetch from 'cross-fetch';
 
 import * as config from './config';
+import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client';
+
+const cache = new InMemoryCache();
+const httpLink = new HttpLink({ uri: config.GRAPHQL_SERVER_URL });
+const client = new ApolloClient({ cache, link:httpLink });
 
 const initialLocalAppState = {
   component: { name: 'Home', props: {} },
@@ -71,6 +76,16 @@ export const useStoreObject = () => {
     return gsResp;
   };
 
+  const query = async (query, { variables } = {}) => {
+    const resp = await client.query({ query, variables });
+    return resp;
+  };
+
+  const mutate = async (mutation, { variables } = {}) => {
+    const resp = await client.mutate({ mutation, variables });
+    return resp;
+  };
+
   // In React components, the following is the object you get
   // when you make a useStore() call
   return {
@@ -78,6 +93,8 @@ export const useStoreObject = () => {
     setLocalAppState,
     AppLink,
     request,
+    query,
+    mutate,
   };
 };
 
