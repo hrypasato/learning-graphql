@@ -54,12 +54,11 @@ export default function Approach({ approach, isHighlighted }) {
       return setUIErrors(rootErrors);
     }
 
-    const { errors, updatedApproach } = data.approachVote
+    const { errors } = data.approachVote
 
     if (errors.length > 0) {
       return setUIErrors(errors);
     }
-    setVoteCount(updatedApproach.voteCount);
   };
 
   const renderVoteButton = (direction) => (

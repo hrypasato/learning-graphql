@@ -49,8 +49,9 @@ export default function TaskPage({ taskId }) {
 
   const { taskInfo } = data;
 
-  const handleAddNewApproach = (newApproach) => {
-    setHighlightedApproachId(newApproach.id);
+  const handleAddNewApproach = (addNewApproach) => {
+    const newApproachId = addNewApproach(taskInfo);
+    setHighlightedApproachId(newApproachId);
     setShowAddApproach(false);
   };
 
