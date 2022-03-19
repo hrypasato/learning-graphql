@@ -73,7 +73,7 @@ export default function Login() {
         </div>
         <Errors errors={uiErrors} />
         <div className="spaced">
-          <button className="btn btn-primary" type="submit">
+          <button className="btn btn-primary" type="submit" disabled={loading}>
             Login
           </button>
         </div>
