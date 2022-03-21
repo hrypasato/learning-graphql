@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import fetch from 'cross-fetch';
 
 import * as config from './config';
-import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, gql, HttpLink, InMemoryCache, useApolloClient, useQuery } from '@apollo/client';
 import { setContext } from '@apollo/link-context';
 
 const cache = new InMemoryCache();
@@ -14,22 +14,35 @@ const initialLocalAppState = {
   user: JSON.parse(window.localStorage.getItem('azdev:user')),
 };
 
+export const LOCAL_APP_STATE = gql`
+  query localAppState {
+    component @client {
+      name
+      props
+    }
+    user @client{
+      username
+      authToken
+    }
+  }
+`;
+
 // The useStoreObject is a custom hook function designed
 // to be used with React's context feature
-export const useStoreObject = () => {
+export const useStore = () => {
   // This state object is used to manage
   // all local app state elements (like user/component)
-  const [state, setState] = useState(() => initialLocalAppState);
-
+  const client = useApolloClient();
   // This function can be used with 1 or more
   // state elements. For example:
   // const user = useLocalAppState('user');
   // const [component, user] = useLocalAppState('component', 'user');
   const useLocalAppState = (...stateMapper) => {
+    const { data } = useQuery(LOCAL_APP_STATE);
     if (stateMapper.length === 1) {
-      return state[stateMapper[0]];
+      return data[stateMapper[0]];
     }
-    return stateMapper.map((element) => state[element]);
+    return stateMapper.map((element) => data[element]);
   };
 
   // This function shallow-merges a newState object
@@ -38,13 +51,24 @@ export const useStoreObject = () => {
     if (newState.component) {
       newState.component.props = newState.component.props ?? {};
     }
-    setState((currentState) => {
-      return { ...currentState, ...newState };
+    
+    const currentState = client.readQuery({
+      query:LOCAL_APP_STATE
     });
+
+    const updateState = () => {
+      client.writeQuery({
+        query: LOCAL_APP_STATE,
+        data:{ ...currentState, ...newState }
+      });
+    };
 
     //Reset cache when users login/logout
     if(newState.user || newState.user === null){
+      client.onResetStore(updateState);
       client.resetStore();
+    }else{
+      updateState();
     }
 
   };
@@ -67,60 +91,11 @@ export const useStoreObject = () => {
     );
   };
 
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers:{
-        ...headers,
-        authorization: state.user 
-                      ? `Bearer ${state.user.authToken}`
-                      : ''
-      }
-    }
-  });
-
-  client.setLink(authLink.concat(httpLink));
-
-  // This function should make an ajax call to GraphQL server
-  // and return the GraphQL response object
-  const request = async (requestText, { variables } = {}) => {
-    const headers = state.user 
-      ? { Authorization: 'Bearer ' + state.user.authToken } 
-      : {};
-
-    const gsResp = await fetch(config.GRAPHQL_SERVER_URL, {
-      method:'post',
-      headers:{ ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: requestText, variables })
-    }).then((response) => response.json());
-
-    return gsResp;
-  };
-
-  const query = async (query, { variables } = {}) => {
-    const resp = await client.query({ query, variables });
-    return resp;
-  };
-
-  const mutate = async (mutation, { variables } = {}) => {
-    const resp = await client.mutate({ mutation, variables });
-    return resp;
-  };
-
   // In React components, the following is the object you get
   // when you make a useStore() call
   return {
     useLocalAppState,
     setLocalAppState,
     AppLink,
-    request,
-    query,
-    mutate,
-    client,
   };
 };
-
-// Define React's context object and the useStore
-// custom hook function that'll use it
-const AZContext = React.createContext();
-export const Provider = AZContext.Provider;
-export const useStore = () => React.useContext(AZContext);
