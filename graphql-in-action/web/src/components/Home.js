@@ -15,7 +15,9 @@ ${TASK_SUMMARY_FRAGMENT}
 `;
 
 export default function Home() {
-  const { error, loading, data } = useQuery(TASK_MAIN_LIST);
+  const { error, loading, data } = useQuery(TASK_MAIN_LIST,{
+    pollInterval: 5000
+  });
 
   if(error){
     return <div className='error'>{error.message}</div>
