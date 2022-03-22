@@ -10,6 +10,7 @@ import { graphqlHTTP } from "express-graphql";
 import pgApiWrapper from "./db/pg-api";
 import DataLoader from "dataloader";
 import mongoApiWrapper from "./db/mongo-api";
+import { ApolloServer } from "apollo-server";
 
 async function main() {
   const pgApi = await pgApiWrapper();
@@ -70,6 +71,11 @@ async function main() {
   // This line rus the server
   server.listen(config.port, () => {
     console.log(`Server URL: http://localhost:${config.port}/`);
+  });
+
+  const serverWS = new ApolloServer({ schema });
+  serverWS.listen({ port: 4000 }).then(({ subscriptionsUrl }) => {
+    console.log(`Suscriptions URL: ${subscriptionsUrl}`);
   });
 }
 
