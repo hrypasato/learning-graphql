@@ -416,6 +416,10 @@ pre {
   margin-top: 6px;
 }
 
+.box-primary--first {
+  box-shadow: 0.1em 0.1em 0.5em rgba(154, 205, 50, var(--bg-opacity));
+}
+
 .btn {
   padding-left: 1.25rem;
   padding-right: 1.25rem;

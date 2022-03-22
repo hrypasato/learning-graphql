@@ -12,11 +12,11 @@ fragment TaskSummary on Task {
 }
 `
 
-export default function TaskSummary({ task, link = false }) {
+export default function TaskSummary({ task, link = false, first = false }) {
   const { AppLink } = useStore();
 
   return (
-    <div className="box box-primary">
+    <div className={`box box-primary ${first ? "box-primary--first" :""}`}>
       {link ? (
         <AppLink to="TaskPage" taskId={task.id}>
           {task.content}
