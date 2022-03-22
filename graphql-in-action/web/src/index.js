@@ -4,10 +4,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Root from './components/Root';
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split } from '@apollo/client';
 import * as config from './config';
 import { setContext } from '@apollo/link-context';
+import { WebSocketLink } from '@apollo/client/link/ws';
 import { LOCAL_APP_STATE } from './store';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const authLink = setContext((_, { headers }) => {
     const { user } = client.readQuery({ query:LOCAL_APP_STATE });
@@ -21,7 +23,24 @@ const authLink = setContext((_, { headers }) => {
 
 const httpLink = new HttpLink({ uri: config.GRAPHQL_SERVER_URL });
 const cache = new InMemoryCache();
-const client = new ApolloClient({ link: authLink.concat(httpLink), cache });
+
+const wsLink = new WebSocketLink({
+    uri:config.GRAPHQL_SUBSCRIPTIONS_URL,
+    options:{ reconnect: true }
+});
+const splitLink = split(
+    ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+            definition.kind === 'OperationDefinition' &&
+            definition.operation === 'subscription'
+        );
+    },
+    wsLink,
+    authLink.concat(httpLink)
+);
+
+const client = new ApolloClient({ link: splitLink, cache });
 
 const initialLocalAppState = {
     component: { name:'Home', props:{} },

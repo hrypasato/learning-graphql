@@ -4,7 +4,16 @@ import { useStore } from '../store';
 import NewApproach from './NewApproach';
 import Approach, { APPROACH_FRAGMENT } from './Approach';
 import TaskSummary, { TASK_SUMMARY_FRAGMENT } from './TaskSummary';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useSubscription } from '@apollo/client';
+
+const VOTE_CHANGED = gql`
+subscription voteChanged($taskId: ID!){
+  voteChanged(taskId:$taskId){
+    id
+    voteCount
+  }
+}
+`;
 
 export const FULL_TASK_FRAGMENT = gql`
 fragment FullTaskData on Task {
@@ -37,6 +46,10 @@ export default function TaskPage({ taskId }) {
     variables:{
       taskId
     }
+  });
+
+  useSubscription(VOTE_CHANGED, {
+    variables:{ taskId }
   });
 
   if (error) {
