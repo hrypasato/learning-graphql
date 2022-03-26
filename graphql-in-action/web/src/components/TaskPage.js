@@ -41,6 +41,7 @@ export default function TaskPage({ taskId }) {
   const { AppLink } = useStore();
   const [showAddApproach, setShowAddApproach] = useState(false);
   const [highlightedApproachId, setHighlightedApproachId] = useState();
+  const [ sortByDate, setSortByDate ] = useState(false);
 
   const { error, loading, data } = useQuery(TASK_INFO, {
     variables:{
@@ -91,7 +92,18 @@ export default function TaskPage({ taskId }) {
           )}
         </div>
         <h2>Approaches ({taskInfo.approachList.length})</h2>
-        {taskInfo.approachList.map((approach) => (
+        <div>Sort by:
+          <button
+            className="btn btn-secondary btn-secondary--small"
+            onClick={() => setSortByDate(!sortByDate)}
+          >
+            { sortByDate ? 'Votes' : 'Date'}
+          </button>
+        </div>
+        {( !sortByDate ? 
+            taskInfo.approachList : 
+            [...taskInfo.approachList].sort((a,b) => a.createdAt > b.createdAt ? 1 : -1 )
+            ).map((approach) => (
           <div key={approach.id} id={approach.id}>
             <Approach
               approach={approach}
