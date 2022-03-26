@@ -330,6 +330,10 @@ body {
   font-style: italic;
   font-size: 0.875rem;
 }
+.text-secondary--small{
+  font-style: normal;
+  font-size: 0.8rem;
+}
 
 .header {
   --text-opacity: 1;
