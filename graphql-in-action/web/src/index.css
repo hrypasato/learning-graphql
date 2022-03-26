@@ -451,6 +451,12 @@ pre {
   border-radius: 0.25rem;
 }
 
+.btn-secondary--small {
+  font-size: 0.9rem;
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
 .btn-append {
   --bg-opacity: 1;
   background-color: #e2e8f0;
