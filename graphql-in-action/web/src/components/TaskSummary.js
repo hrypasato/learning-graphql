@@ -5,6 +5,7 @@ import { useStore } from '../store';
 export const TASK_SUMMARY_FRAGMENT = `
 fragment TaskSummary on Task {
   content
+  createdAt
   author {
     username
   }
@@ -25,7 +26,9 @@ export default function TaskSummary({ task, link = false, first = false }) {
         task.content
       )}
       <div className="box-footer">
-        <div className="text-secondary">{task.author.username}</div>
+        <div className="text-secondary">{task.author.username}
+          <div className="text-secondary--small">{new Date(task.createdAt).toLocaleDateString()}</div>
+        </div>
         <div className="tags">
           {task.tags.map((tag) => (
             <span key={tag} className="box-label">
