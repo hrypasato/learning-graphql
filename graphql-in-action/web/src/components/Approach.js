@@ -6,6 +6,7 @@ import Errors from './Errors';
 export const APPROACH_FRAGMENT = gql`
 fragment ApproachFragment on Approach{
   content
+  createdAt
   voteCount
   author{
     username
@@ -89,7 +90,9 @@ export default function Approach({ approach, isHighlighted }) {
         </div>
         <div className="main">
           <pre className="code">{approach.content}</pre>
-          <div className="author">{approach.author.username}</div>
+          <div className="author">{approach.author.username}
+          <div className="text-secondary--small">{new Date(approach.createdAt).toLocaleDateString()}</div>
+          </div>
         </div>
       </div>
       <Errors errors={uiErrors} />
