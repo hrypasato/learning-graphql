@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useStore } from '../store';
 
@@ -11,18 +11,24 @@ query searchResults($searchTerm: String!){
     content
     ...on Task{
       approachCount
+      author{
+        username
+      }
     }
     ...on Approach{
       task{
         id
         content
       }
+      author{
+        username
+      }
     }
   }
 }
 `;
 
-function SearchResults ({ searchTerm }){
+function SearchResults ({ searchTerm, onlyMine, user }){
   const { AppLink } = useStore();
   const { error, loading, data } = useQuery(SEARCH_RESULTS, {
     variables: { searchTerm }
@@ -36,16 +42,20 @@ function SearchResults ({ searchTerm }){
     return <div className='loading'>Loading...</div>
   }
 
+  const results = onlyMine ? [...data.searchResults]
+                              .filter(result => result.author.username === user.username)
+                            : [...data.searchResults];
+
   return (
     <div>
       {data && data.searchResults && (
         <div>
           <h2>Search Results</h2>
           <div className="y-spaced">
-            {data.searchResults.length === 0 && (
+            {results.length === 0 && (
               <div className="box box-primary">No results</div>
             )}
-            {data.searchResults.map((item, index) => (
+            {results.map((item, index) => (
               <div key={index} className="box box-primary">
                 <AppLink
                   to="TaskPage"
@@ -73,7 +83,9 @@ function SearchResults ({ searchTerm }){
 }
 
 export default function Search({ searchTerm = null }) {
-  const { setLocalAppState } = useStore();
+  const { setLocalAppState, useLocalAppState } = useStore();
+  const [onlyMine, setOnlyMine] = useState(false);
+  const user = useLocalAppState('user');
 
   const handleSearchSubmit = async (event) => {
     event.preventDefault();
@@ -104,8 +116,14 @@ export default function Search({ searchTerm = null }) {
             </div>
           </div>
         </form>
+        <div>
+          <label className='checkbox'>
+            <input type="checkbox" disabled={!user} checked={onlyMine} onChange={() => setOnlyMine(!onlyMine)} name="controlled"/>
+            Only my work
+          </label>
+        </div>
       </div>
-      { searchTerm && <SearchResults searchTerm={searchTerm}/>}
+      { searchTerm && <SearchResults searchTerm={searchTerm} onlyMine={onlyMine} user={user}/>}
     </div>
   );
 }

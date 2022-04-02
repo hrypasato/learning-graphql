@@ -726,3 +726,11 @@ textarea:focus {
 .form-entry select {
   margin-right: 0.5rem;
 }
+
+.checkbox{
+  display: contents;
+}
+
+.checkbox > input{
+  margin: 1rem;
+}
