@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start-dbs": "docker-compose -f dev-dbs/docker.yml up",
-    "api-server": "(cd api && node -r esm src/server.js)",
+    "api-server": "(cd api && nodemon -r esm src/server.js)",
     "web-server": "(cd web/src && rimraf .cache dist && parcel index.html)",
     "start-blank-dbs": "docker-compose -f dev-dbs/docker-blank.yml up"
   },
